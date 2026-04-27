@@ -94,9 +94,9 @@ export default function Landing() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep()) return;
+  if (!validateStep()) return;
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
   const leadData = {
     name: answers.question_1 || "",
@@ -107,17 +107,21 @@ export default function Landing() {
     debts: answers.question_6 || "",
     loan_amount: answers.question_7 || "",
     purpose: answers.question_8 || "",
+    submitted_at: new Date().toISOString()
   };
 
   try {
-    await fetch("https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec", {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(leadData)
-    });
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(leadData)
+      }
+    );
 
     setIsSuccess(true);
 
