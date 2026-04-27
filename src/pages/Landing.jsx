@@ -48,7 +48,6 @@ const [answers,setAnswers]=useState({});
 const [errors,setErrors]=useState({});
 const [isSubmitting,setIsSubmitting]=useState(false);
 const [isSuccess,setIsSuccess]=useState(false);
-const [direction,setDirection]=useState(1);
 
 const shouldSkipStep2=()=>answers.question_3==="שכיר";
 
@@ -82,8 +81,6 @@ return ok;
 const handleNext=()=>{
 if(!validateStep()) return;
 
-setDirection(1);
-
 if(currentStep===1 && shouldSkipStep2()){
 setCurrentStep(3);
 }else{
@@ -92,8 +89,6 @@ setCurrentStep(s=>s+1);
 };
 
 const handleBack=()=>{
-setDirection(-1);
-
 if(currentStep===3 && shouldSkipStep2()){
 setCurrentStep(1);
 }else{
@@ -110,21 +105,22 @@ setIsSubmitting(true);
 
 try{
 
-const formData = new FormData();
+const formData=new FormData();
 
-formData.append("name",answers.question_1 || "");
-formData.append("phone",answers.question_2 || "");
-formData.append("status",answers.question_3 || "");
-formData.append("business_type",answers.question_4 || "");
-formData.append("income",answers.question_5 || "");
-formData.append("debts",answers.question_6 || "");
-formData.append("loan_amount",answers.question_7 || "");
-formData.append("purpose",answers.question_8 || "");
+formData.append("name",answers.question_1||"");
+formData.append("phone",answers.question_2||"");
+formData.append("status",answers.question_3||"");
+formData.append("business_type",answers.question_4||"");
+formData.append("income",answers.question_5||"");
+formData.append("debts",answers.question_6||"");
+formData.append("loan_amount",answers.question_7||"");
+formData.append("purpose",answers.question_8||"");
 
 await fetch(
 "https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
 {
 method:"POST",
+mode:"no-cors",
 body:formData
 }
 );
@@ -133,7 +129,6 @@ setIsSuccess(true);
 
 }catch(e){
 console.error(e);
-alert("שגיאה בשליחה");
 }
 
 setIsSubmitting(false);
@@ -143,7 +138,7 @@ setIsSubmitting(false);
 
 if(isSuccess){
 return(
-<div className="min-h-screen bg-background">
+<div className="min-h-screen">
 <BackgroundOrbs bgImage={BG_IMAGE}/>
 <SuccessScreen/>
 </div>
@@ -151,12 +146,12 @@ return(
 }
 
 const step=STEPS[currentStep];
+const isLast=currentStep===TOTAL_STEPS-1;
 const effectiveTotal=shouldSkipStep2()?TOTAL_STEPS-1:TOTAL_STEPS;
 const effectiveStep=shouldSkipStep2() && currentStep>=3 ? currentStep-1 : currentStep;
-const isLast=currentStep===TOTAL_STEPS-1;
 
 return(
-<div className="min-h-screen bg-background relative overflow-hidden">
+<div className="min-h-screen relative overflow-hidden">
 
 <BackgroundOrbs bgImage={BG_IMAGE}/>
 
@@ -165,12 +160,12 @@ currentStep={effectiveStep}
 totalSteps={effectiveTotal}
 />
 
-<div className="fixed top-0 left-0 right-0 z-40 flex justify-center py-3">
-<img src={LOGO_URL} className="h-9 object-contain"/>
+<div className="fixed top-0 left-0 right-0 flex justify-center py-3 z-50">
+<img src={LOGO_URL} className="h-9"/>
 </div>
 
-<div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-20">
-<div className="w-full max-w-2xl">
+<div className="min-h-screen flex items-center justify-center px-4 py-20">
+<div className="max-w-2xl w-full">
 
 <AnimatePresence mode="wait">
 <motion.div
@@ -202,7 +197,6 @@ options={q.options||[]}
 );
 })}
 </div>
-
 
 <div className="flex justify-between pt-4" dir="rtl">
 
@@ -251,6 +245,6 @@ totalSteps={effectiveTotal}
 />
 
 </div>
-);
+)
 
 }
