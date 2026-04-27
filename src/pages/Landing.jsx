@@ -95,10 +95,39 @@ export default function Landing() {
 
   const handleSubmit = async () => {
     if (!validateStep()) return;
+
     setIsSubmitting(true);
-    const leadData = {
-      ...answers,
-      submitted_at: new Date().toISOString(),
+
+  const leadData = {
+    name: answers.question_1 || "",
+    phone: answers.question_2 || "",
+    status: answers.question_3 || "",
+    business_type: answers.question_4 || "",
+    income: answers.question_5 || "",
+    debts: answers.question_6 || "",
+    loan_amount: answers.question_7 || "",
+    purpose: answers.question_8 || "",
+  };
+
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(leadData)
+    });
+
+    setIsSuccess(true);
+
+  } catch (e) {
+    console.error(e);
+    alert("שגיאה בשליחה");
+  }
+
+  setIsSubmitting(false);
+};
     };
     // map question_8 into the data
     await base44.entities.Lead.create(leadData);
