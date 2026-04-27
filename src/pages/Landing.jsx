@@ -54,6 +54,7 @@ const shouldSkipStep2=()=>answers.question_3==="שכיר";
 
 const handleAnswer=(key,val)=>{
 setAnswers(prev=>({...prev,[key]:val}));
+
 if(errors[key]){
 setErrors(prev=>({...prev,[key]:false}));
 }
@@ -102,7 +103,7 @@ setCurrentStep(s=>s-1);
 };
 
 
-const handleSubmit = async () => {
+const handleSubmit=async()=>{
 
 if(!validateStep()) return;
 
@@ -127,17 +128,23 @@ const url=
 +
 "&loan_amount="+encodeURIComponent(answers.question_7||"")
 +
-"&purpose="+encodeURIComponent(answers.question_8||"");
+"&purpose="+encodeURIComponent(answers.question_8||"")
++
+"&t="+Date.now();
 
-await fetch(url,{
-method:"GET",
-mode:"no-cors"
+await new Promise((resolve)=>{
+const img=new Image();
+img.onload=resolve;
+img.onerror=resolve;
+img.src=url;
+setTimeout(resolve,1500);
 });
 
 setIsSuccess(true);
 
 }catch(e){
 console.error(e);
+alert("שגיאה בשליחה");
 }
 
 setIsSubmitting(false);
@@ -176,7 +183,7 @@ totalSteps={effectiveTotal}
 <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-20">
 <div className="w-full max-w-2xl">
 
-<AnimatePresence mode="wait" custom={direction}>
+<AnimatePresence mode="wait">
 <motion.div
 key={currentStep}
 initial={{opacity:0,x:100}}
@@ -192,7 +199,11 @@ const q=QUESTIONS[qi];
 return(
 <QuestionField
 key={q.key}
-question={typeof q.text==="function"?q.text(answers):q.text}
+question={
+typeof q.text==="function"
+?q.text(answers)
+:q.text
+}
 value={answers[q.key]||""}
 onChange={(v)=>handleAnswer(q.key,v)}
 error={errors[q.key]}
@@ -213,7 +224,10 @@ options={q.options||[]}
 ):<div/>}
 
 {isLast?(
-<Button onClick={handleSubmit} disabled={isSubmitting}>
+<Button
+onClick={handleSubmit}
+disabled={isSubmitting}
+>
 {isSubmitting?(
 <>
 <Loader2 className="w-5 h-5 animate-spin"/>
