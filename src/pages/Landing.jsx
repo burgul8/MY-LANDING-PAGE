@@ -102,44 +102,45 @@ setCurrentStep(s=>s-1);
 };
 
 
-const handleSubmit=async()=>{
+const handleSubmit = async () => {
 
-if(!validateStep()) return;
+if (!validateStep()) return;
 
 setIsSubmitting(true);
 
-try{
+try {
 
-const formData=new FormData();
+const url =
+"https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec"
++
+"?name=" + encodeURIComponent(answers.question_1 || "")
++
+"&phone=" + encodeURIComponent(answers.question_2 || "")
++
+"&status=" + encodeURIComponent(answers.question_3 || "")
++
+"&business_type=" + encodeURIComponent(answers.question_4 || "")
++
+"&income=" + encodeURIComponent(answers.question_5 || "")
++
+"&debts=" + encodeURIComponent(answers.question_6 || "")
++
+"&loan_amount=" + encodeURIComponent(answers.question_7 || "")
++
+"&purpose=" + encodeURIComponent(answers.question_8 || "");
 
-formData.append("name",answers.question_1 || "");
-formData.append("phone",answers.question_2 || "");
-formData.append("status",answers.question_3 || "");
-formData.append("business_type",answers.question_4 || "");
-formData.append("income",answers.question_5 || "");
-formData.append("debts",answers.question_6 || "");
-formData.append("loan_amount",answers.question_7 || "");
-formData.append("purpose",answers.question_8 || "");
-
-await fetch(
-"https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
-{
-method:"POST",
-mode:"no-cors",
-body:formData
-}
-);
+await fetch(url);
 
 setIsSuccess(true);
 
 }catch(e){
 console.error(e);
+alert("שגיאה בשליחה");
 }
 
 setIsSubmitting(false);
 
 };
-
 if(isSuccess){
 return(
 <div className="min-h-screen bg-background">
