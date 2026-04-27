@@ -108,25 +108,28 @@ if(!validateStep()) return;
 
 setIsSubmitting(true);
 
+const leadData={
+name:answers.question_1 || "",
+phone:answers.question_2 || "",
+status:answers.question_3 || "",
+business_type:answers.question_4 || "",
+income:answers.question_5 || "",
+debts:answers.question_6 || "",
+loan_amount:answers.question_7 || "",
+purpose:answers.question_8 || ""
+};
+
 try{
-
-const formData=new FormData();
-
-formData.append("name",answers.question_1||"");
-formData.append("phone",answers.question_2||"");
-formData.append("status",answers.question_3||"");
-formData.append("business_type",answers.question_4||"");
-formData.append("income",answers.question_5||"");
-formData.append("debts",answers.question_6||"");
-formData.append("loan_amount",answers.question_7||"");
-formData.append("purpose",answers.question_8||"");
 
 await fetch(
 "https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
 {
 method:"POST",
 mode:"no-cors",
-body:formData
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(leadData)
 }
 );
 
@@ -134,6 +137,7 @@ setIsSuccess(true);
 
 }catch(e){
 console.error(e);
+alert("שגיאה בשליחה");
 }
 
 setIsSubmitting(false);
@@ -143,7 +147,7 @@ setIsSubmitting(false);
 
 if(isSuccess){
 return(
-<div className="min-h-screen">
+<div className="min-h-screen bg-background">
 <BackgroundOrbs bgImage={BG_IMAGE}/>
 <SuccessScreen/>
 </div>
@@ -151,12 +155,12 @@ return(
 }
 
 const step=STEPS[currentStep];
-const isLast=currentStep===TOTAL_STEPS-1;
 const effectiveTotal=shouldSkipStep2()?TOTAL_STEPS-1:TOTAL_STEPS;
 const effectiveStep=shouldSkipStep2() && currentStep>=3 ? currentStep-1 : currentStep;
+const isLast=currentStep===TOTAL_STEPS-1;
 
 return(
-<div className="min-h-screen relative overflow-hidden">
+<div className="min-h-screen bg-background relative overflow-hidden">
 
 <BackgroundOrbs bgImage={BG_IMAGE}/>
 
@@ -165,21 +169,29 @@ currentStep={effectiveStep}
 totalSteps={effectiveTotal}
 />
 
-<div className="fixed top-0 left-0 right-0 flex justify-center py-3 z-50">
-<img src={LOGO_URL} className="h-9"/>
+<div className="fixed top-0 left-0 right-0 z-40 flex justify-center py-3">
+<img src={LOGO_URL} className="h-9 object-contain"/>
 </div>
 
-<div className="min-h-screen flex items-center justify-center px-4 py-20">
-<div className="max-w-2xl w-full">
+<div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-20">
+<div className="w-full max-w-2xl">
 
-<AnimatePresence mode="wait">
+<AnimatePresence mode="wait" custom={direction}>
 <motion.div
 key={currentStep}
-initial={{opacity:0,x:80}}
+initial={{opacity:0,x:100}}
 animate={{opacity:1,x:0}}
-exit={{opacity:0,x:-80}}
+exit={{opacity:0,x:-100}}
 className="space-y-10"
 >
+
+<div className="text-center" dir="rtl">
+<span>
+{isLast
+?"שלב אחרון"
+:`שלב ${effectiveStep+1} מתוך ${effectiveTotal}`}
+</span>
+</div>
 
 <div className="space-y-8">
 {step.questionIndices.map((qi)=>{
@@ -202,6 +214,7 @@ options={q.options||[]}
 );
 })}
 </div>
+
 
 <div className="flex justify-between pt-4" dir="rtl">
 
@@ -250,6 +263,6 @@ totalSteps={effectiveTotal}
 />
 
 </div>
-)
+);
 
 }
