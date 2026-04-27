@@ -48,6 +48,7 @@ const [answers,setAnswers]=useState({});
 const [errors,setErrors]=useState({});
 const [isSubmitting,setIsSubmitting]=useState(false);
 const [isSuccess,setIsSuccess]=useState(false);
+const [direction,setDirection]=useState(1);
 
 const shouldSkipStep2=()=>answers.question_3==="שכיר";
 
@@ -81,6 +82,8 @@ return ok;
 const handleNext=()=>{
 if(!validateStep()) return;
 
+setDirection(1);
+
 if(currentStep===1 && shouldSkipStep2()){
 setCurrentStep(3);
 }else{
@@ -89,6 +92,8 @@ setCurrentStep(s=>s+1);
 };
 
 const handleBack=()=>{
+setDirection(-1);
+
 if(currentStep===3 && shouldSkipStep2()){
 setCurrentStep(1);
 }else{
