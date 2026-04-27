@@ -104,43 +104,47 @@ setCurrentStep(s=>s-1);
 
 const handleSubmit = async () => {
 
-if (!validateStep()) return;
+if(!validateStep()) return;
 
 setIsSubmitting(true);
 
-try {
+try{
 
-const url =
+const url=
 "https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec"
 +
-"?name=" + encodeURIComponent(answers.question_1 || "")
+"?name="+encodeURIComponent(answers.question_1||"")
 +
-"&phone=" + encodeURIComponent(answers.question_2 || "")
+"&phone="+encodeURIComponent(answers.question_2||"")
 +
-"&status=" + encodeURIComponent(answers.question_3 || "")
+"&status="+encodeURIComponent(answers.question_3||"")
 +
-"&business_type=" + encodeURIComponent(answers.question_4 || "")
+"&business_type="+encodeURIComponent(answers.question_4||"")
 +
-"&income=" + encodeURIComponent(answers.question_5 || "")
+"&income="+encodeURIComponent(answers.question_5||"")
 +
-"&debts=" + encodeURIComponent(answers.question_6 || "")
+"&debts="+encodeURIComponent(answers.question_6||"")
 +
-"&loan_amount=" + encodeURIComponent(answers.question_7 || "")
+"&loan_amount="+encodeURIComponent(answers.question_7||"")
 +
-"&purpose=" + encodeURIComponent(answers.question_8 || "");
+"&purpose="+encodeURIComponent(answers.question_8||"");
 
-await fetch(url);
+await fetch(url,{
+method:"GET",
+mode:"no-cors"
+});
 
 setIsSuccess(true);
 
 }catch(e){
 console.error(e);
-alert("שגיאה בשליחה");
 }
 
 setIsSubmitting(false);
 
 };
+
+
 if(isSuccess){
 return(
 <div className="min-h-screen bg-background">
@@ -181,14 +185,6 @@ exit={{opacity:0,x:-100}}
 className="space-y-10"
 >
 
-<div className="text-center" dir="rtl">
-<span>
-{isLast
-?"שלב אחרון"
-:`שלב ${effectiveStep+1} מתוך ${effectiveTotal}`}
-</span>
-</div>
-
 <div className="space-y-8">
 {step.questionIndices.map((qi)=>{
 const q=QUESTIONS[qi];
@@ -196,11 +192,7 @@ const q=QUESTIONS[qi];
 return(
 <QuestionField
 key={q.key}
-question={
-typeof q.text==="function"
-?q.text(answers)
-:q.text
-}
+question={typeof q.text==="function"?q.text(answers):q.text}
 value={answers[q.key]||""}
 onChange={(v)=>handleAnswer(q.key,v)}
 error={errors[q.key]}
@@ -210,7 +202,6 @@ options={q.options||[]}
 );
 })}
 </div>
-
 
 <div className="flex justify-between pt-4" dir="rtl">
 
@@ -222,10 +213,7 @@ options={q.options||[]}
 ):<div/>}
 
 {isLast?(
-<Button
-onClick={handleSubmit}
-disabled={isSubmitting}
->
+<Button onClick={handleSubmit} disabled={isSubmitting}>
 {isSubmitting?(
 <>
 <Loader2 className="w-5 h-5 animate-spin"/>
