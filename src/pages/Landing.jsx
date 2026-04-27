@@ -108,28 +108,25 @@ if(!validateStep()) return;
 
 setIsSubmitting(true);
 
-const leadData={
-name:answers.question_1 || "",
-phone:answers.question_2 || "",
-status:answers.question_3 || "",
-business_type:answers.question_4 || "",
-income:answers.question_5 || "",
-debts:answers.question_6 || "",
-loan_amount:answers.question_7 || "",
-purpose:answers.question_8 || ""
-};
-
 try{
+
+const formData=new FormData();
+
+formData.append("name",answers.question_1 || "");
+formData.append("phone",answers.question_2 || "");
+formData.append("status",answers.question_3 || "");
+formData.append("business_type",answers.question_4 || "");
+formData.append("income",answers.question_5 || "");
+formData.append("debts",answers.question_6 || "");
+formData.append("loan_amount",answers.question_7 || "");
+formData.append("purpose",answers.question_8 || "");
 
 await fetch(
 "https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
 {
 method:"POST",
 mode:"no-cors",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(leadData)
+body:formData
 }
 );
 
@@ -137,13 +134,11 @@ setIsSuccess(true);
 
 }catch(e){
 console.error(e);
-alert("שגיאה בשליחה");
 }
 
 setIsSubmitting(false);
 
 };
-
 
 if(isSuccess){
 return(
