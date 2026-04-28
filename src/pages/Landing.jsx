@@ -103,47 +103,40 @@ setCurrentStep(s=>s-1);
 };
 
 
-const handleSubmit=async()=>{
+const handleSubmit = async()=>{
 
 if(!validateStep()) return;
 
 setIsSubmitting(true);
 
+const leadData={
+name:answers.question_1 || "",
+phone:answers.question_2 || "",
+status:answers.question_3 || "",
+business_type:answers.question_4 || "",
+income:answers.question_5 || "",
+debts:answers.question_6 || "",
+loan_amount:answers.question_7 || "",
+purpose:answers.question_8 || ""
+};
+
 try{
 
-const url=
-"https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec"
-+
-"?name="+encodeURIComponent(answers.question_1||"")
-+
-"&phone="+encodeURIComponent(answers.question_2||"")
-+
-"&status="+encodeURIComponent(answers.question_3||"")
-+
-"&business_type="+encodeURIComponent(answers.question_4||"")
-+
-"&income="+encodeURIComponent(answers.question_5||"")
-+
-"&debts="+encodeURIComponent(answers.question_6||"")
-+
-"&loan_amount="+encodeURIComponent(answers.question_7||"")
-+
-"&purpose="+encodeURIComponent(answers.question_8||"")
-+
-"&t="+Date.now();
-
-await new Promise((resolve)=>{
-const img=new Image();
-img.onload=resolve;
-img.onerror=resolve;
-img.src=url;
-setTimeout(resolve,1500);
-});
+await fetch(
+"https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
+{
+method:"POST",
+body:JSON.stringify(leadData),
+headers:{
+"Content-Type":"application/json"
+}
+}
+);
 
 setIsSuccess(true);
 
-}catch(e){
-console.error(e);
+}catch(error){
+console.error(error);
 alert("שגיאה בשליחה");
 }
 
