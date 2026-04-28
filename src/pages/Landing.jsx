@@ -54,7 +54,6 @@ const shouldSkipStep2=()=>answers.question_3==="שכיר";
 
 const handleAnswer=(key,val)=>{
 setAnswers(prev=>({...prev,[key]:val}));
-
 if(errors[key]){
 setErrors(prev=>({...prev,[key]:false}));
 }
@@ -103,7 +102,7 @@ setCurrentStep(s=>s-1);
 };
 
 
-const handleSubmit = async()=>{
+const handleSubmit=async()=>{
 
 if(!validateStep()) return;
 
@@ -126,17 +125,18 @@ await fetch(
 "https://script.google.com/macros/s/AKfycbypy8hLBenBZU6uYSSeUJeBr0XdQbCviT-he1plRQqUQ6EF9b8k7MMM8ZrlsCP9xEuW/exec",
 {
 method:"POST",
-body:JSON.stringify(leadData),
+mode:"no-cors",
 headers:{
 "Content-Type":"application/json"
-}
+},
+body:JSON.stringify(leadData)
 }
 );
 
 setIsSuccess(true);
 
-}catch(error){
-console.error(error);
+}catch(e){
+console.error(e);
 alert("שגיאה בשליחה");
 }
 
@@ -176,7 +176,7 @@ totalSteps={effectiveTotal}
 <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-20">
 <div className="w-full max-w-2xl">
 
-<AnimatePresence mode="wait">
+<AnimatePresence mode="wait" custom={direction}>
 <motion.div
 key={currentStep}
 initial={{opacity:0,x:100}}
@@ -184,6 +184,14 @@ animate={{opacity:1,x:0}}
 exit={{opacity:0,x:-100}}
 className="space-y-10"
 >
+
+<div className="text-center" dir="rtl">
+<span>
+{isLast
+?"שלב אחרון"
+:`שלב ${effectiveStep+1} מתוך ${effectiveTotal}`}
+</span>
+</div>
 
 <div className="space-y-8">
 {step.questionIndices.map((qi)=>{
@@ -206,6 +214,7 @@ options={q.options||[]}
 );
 })}
 </div>
+
 
 <div className="flex justify-between pt-4" dir="rtl">
 
